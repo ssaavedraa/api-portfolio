@@ -1,0 +1,62 @@
+{
+  "name": "api-portfolio",
+  "version": "1.0.0",
+  "description": "api for portfolio",
+  "main": "index.js",
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node build/index.js",
+    "lint": "ts-standard",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssaavedraa/api-portfolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "api",
+    "ssaavedraa",
+    "santiago",
+    "saavedra"
+  ],
+  "author": "ssaavedraa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ssaavedraa/api-portfolio/issues"
+  },
+  "homepage": "https://github.com/ssaavedraa/api-portfolio#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/nodemailer": "^6.4.5",
+    "ts-node-dev": "^2.0.0",
+    "ts-standard": "^11.0.0",
+    "typescript": "4.4.4"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "4.18.1",
+    "nodemailer": "^6.7.8"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "./node_modules/ts-standard/eslintrc.json"
+    ]
+  },
+  "ts-standard": {
+    "ignore": [
+      "build",
+      "node_modules"
+    ]
+  }
+}
