@@ -8,9 +8,9 @@ router.post('/send-contact', (req, res) => {
   const contactInfo = req.body as contactInformation
 
   emailService.sendContactEmail(contactInfo)
-    .then(_ => res.status(200).send('Confirmation email sent'))
+    .then(_ => res.status(200).send('Email sent to Santiago'))
     .catch((_error: any) => {
-      res.status(500).send('Error sending confirmation email')
+      res.status(500).send('Error sending email to Santiago')
     })
 })
 
@@ -18,9 +18,9 @@ router.post('/send-confirmation', (req, res) => {
   const contactInfo = req.body as contactInformation
 
   emailService.sendConfirmationEmail(contactInfo)
-    .then(_ => res.status(200).send('Email sent to Santiago'))
+    .then(_ => res.status(200).send('Confirmation email sent'))
     .catch((_error: any) => {
-      res.status(500).send('Error sending email to Santiago')
+      res.status(500).send('Error sending confirmation email')
     })
 })
 
