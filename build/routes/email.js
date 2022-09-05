@@ -28,17 +28,17 @@ const router = express_1.default.Router();
 router.post('/send-contact', (req, res) => {
     const contactInfo = req.body;
     emailService.sendContactEmail(contactInfo)
-        .then(_ => res.status(200).send('Confirmation email sent'))
+        .then(_ => res.status(200).send('Email sent to Santiago'))
         .catch((_error) => {
-        res.status(500).send('Error sending confirmation email');
+        res.status(500).send('Error sending email to Santiago');
     });
 });
 router.post('/send-confirmation', (req, res) => {
     const contactInfo = req.body;
     emailService.sendConfirmationEmail(contactInfo)
-        .then(_ => res.status(200).send('Email sent to Santiago'))
+        .then(_ => res.status(200).send('Confirmation email sent'))
         .catch((_error) => {
-        res.status(500).send('Error sending email to Santiago');
+        res.status(500).send('Error sending confirmation email');
     });
 });
 exports.default = router;
