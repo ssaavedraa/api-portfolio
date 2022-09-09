@@ -1,7 +1,7 @@
-import { contactInformation } from './../types.d'
+import { ContactInformation } from './../types.d'
 import createTransporter from '../utils/nodemailer/nodemailer'
 
-export const sendContactEmail = async (contactInfo: contactInformation): Promise<string> => {
+export const sendContactEmail = async (contactInfo: ContactInformation): Promise<string> => {
   const transporter = createTransporter()
   const originEmail = process.env.GMAIL_USER as string
 
@@ -15,7 +15,7 @@ export const sendContactEmail = async (contactInfo: contactInformation): Promise
   return info.response
 }
 
-export const sendConfirmationEmail = async (contactInfo: contactInformation): Promise<string> => {
+export const sendConfirmationEmail = async (contactInfo: ContactInformation): Promise<string> => {
   const transporter = createTransporter()
 
   const info = await transporter.sendMail({

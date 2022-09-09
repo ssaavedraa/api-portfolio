@@ -1,7 +1,9 @@
 import express from 'express'
 import cors from 'cors'
-import emailRouter from './routes/email'
 import * as dotenv from 'dotenv'
+
+import emailRouter from './routes/email'
+import githubRouter from './routes/github'
 
 dotenv.config()
 
@@ -27,6 +29,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use('/api/email', emailRouter)
+app.use('/api/repositories', githubRouter)
 
 app.get('/', (_, res) => {
   res.send('api.santiagosaavedra.com.co')

@@ -1,11 +1,11 @@
 import express from 'express'
 import * as emailService from '../services/emailService'
-import { contactInformation } from '../types'
+import { ContactInformation } from '../types.d'
 
 const router = express.Router()
 
 router.post('/send-contact', (req, res) => {
-  const contactInfo = req.body as contactInformation
+  const contactInfo = req.body as ContactInformation
 
   emailService.sendContactEmail(contactInfo)
     .then(_ => res.status(200).send('Email sent to Santiago'))
@@ -15,7 +15,7 @@ router.post('/send-contact', (req, res) => {
 })
 
 router.post('/send-confirmation', (req, res) => {
-  const contactInfo = req.body as contactInformation
+  const contactInfo = req.body as ContactInformation
 
   emailService.sendConfirmationEmail(contactInfo)
     .then(_ => res.status(200).send('Confirmation email sent'))
