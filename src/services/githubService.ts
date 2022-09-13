@@ -5,14 +5,14 @@ const githubBaseUrl = 'https://api.github.com'
 
 const githubAuthorizationHeader = {
   headers: {
-    Authorization: process.env.GITHUB_TOKEN as string
+    Authorization: `token ${process.env.GITHUB_TOKEN as string}`
   }
 }
 
 export const getStarredRepositories = async (): Promise<GithubRepository[]> => {
   const url = `${githubBaseUrl}/users/ssaavedraa/starred`
-
   const githubRawData = await axios.get(url, githubAuthorizationHeader)
+
   return githubRawData.data.map((repository: any) => {
     return {
       id: repository.id,
@@ -26,7 +26,6 @@ export const getStarredRepositories = async (): Promise<GithubRepository[]> => {
 
 export const getRepositoryLanguage = async (repositoryName: string): Promise<LanguagesWithPercentage> => {
   const url = `${githubBaseUrl}/repos/ssaavedraa/${repositoryName}/languages`
-
   const languages = await axios.get(url, githubAuthorizationHeader)
 
   return calculateLanguagePercentage(languages.data)
