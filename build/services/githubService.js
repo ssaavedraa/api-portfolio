@@ -15,11 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRepositoryLanguage = exports.getStarredRepositories = void 0;
 const axios_1 = __importDefault(require("axios"));
 const githubBaseUrl = 'https://api.github.com';
-const githubAuthorizationHeader = {
-    headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`
+const githubAuthorizationHeader = process.env.NODE_ENV === 'development'
+    ? {
+        headers: {
+            Authorization: `token ${process.env.GITHUB_TOKEN}`
+        }
     }
-};
+    : undefined;
 const getStarredRepositories = () => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${githubBaseUrl}/users/ssaavedraa/starred`;
     const githubRawData = yield axios_1.default.get(url, githubAuthorizationHeader);

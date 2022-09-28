@@ -3,11 +3,13 @@ import { GithubRepository, GithubRepositoryLanguage, LanguagesWithPercentage } f
 
 const githubBaseUrl = 'https://api.github.com'
 
-const githubAuthorizationHeader = {
-  headers: {
-    Authorization: `token ${process.env.GITHUB_TOKEN as string}`
-  }
-}
+const githubAuthorizationHeader = process.env.NODE_ENV === 'development'
+  ? {
+      headers: {
+        Authorization: `token ${process.env.GITHUB_TOKEN as string}`
+      }
+    }
+  : undefined
 
 export const getStarredRepositories = async (): Promise<GithubRepository[]> => {
   const url = `${githubBaseUrl}/users/ssaavedraa/starred`
