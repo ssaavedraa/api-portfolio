@@ -25,12 +25,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const githubService = __importStar(require("../services/githubService"));
 const router = express_1.default.Router();
-router.get('/get-starred', (_, res) => {
+router.get('/starred', (_, res) => {
     githubService.getStarredRepositories()
         .then(repository => res.json(repository))
         .catch(e => res.send(e));
 });
-router.get('/get-laguages/:repositoryName', (req, res) => {
+router.get('/languages/:repositoryName', (req, res) => {
     const { repositoryName } = req.params;
     githubService.getRepositoryLanguage(repositoryName)
         .then(languages => res.json(languages))

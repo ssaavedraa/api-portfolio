@@ -11,7 +11,7 @@
     "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
     "start": "cross-env NODE_ENV=production node build/index.js",
     "lint": "ts-standard",
-    "tsc": "tsc",
+    "build": "tsc",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "github": "curl -I https://api.github.com/users/octocat"
   },
