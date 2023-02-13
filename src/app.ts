@@ -9,7 +9,7 @@ dotenv.config()
 
 const app = express()
 
-const allowCors = (process.env.FRONTEND_URL != null) ? process.env.FRONTEND_URL : 'http://localhost:3000'
+const allowCors = (process.env.FRONTEND_URL != null) ? process.env.FRONTEND_URL : '*'
 
 app.use(express.json())
 app.use((_, res, next) => {
