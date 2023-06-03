@@ -9,7 +9,7 @@ export const sendContactEmail = async (contactInfo: ContactInformation): Promise
     replyTo: contactInfo.email,
     to: originEmail,
     subject: `${contactInfo.name} sent you a message`,
-    html: `<b>message: ${contactInfo.message} phone: ${contactInfo.phone}</b>`
+    html: `<b>message: ${contactInfo.message} phone: ${contactInfo.email}</b>`
   })
 
   return info.response
