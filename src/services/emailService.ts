@@ -1,28 +1,47 @@
-import { ContactInformation } from './../types.d'
-import createTransporter from '../utils/nodemailer/nodemailer'
+import { MailOptions } from 'nodemailer/lib/json-transport'
 
-export const sendContactEmail = async (contactInfo: ContactInformation): Promise<string> => {
-  const transporter = createTransporter()
-  const originEmail = process.env.GMAIL_USER as string
+import EmailServiceError from '../errors/EmailServiceError'
+import { ContactInformation } from '../types/ContactInformation'
+import createTransporter from '../utils/nodemailerTransporter'
 
-  const info = await transporter.sendMail({
-    replyTo: contactInfo.email,
-    to: originEmail,
-    subject: `${contactInfo.name} sent you a message`,
-    html: `<b>message: ${contactInfo.message} phone: ${contactInfo.email}</b>`
-  })
+class EmailService {
+  private static GMAIL_USER: string
 
-  return info.response
+  static initialize () {
+    this.GMAIL_USER = process.env.GMAIL_USER as string
+  }
+
+  private static async sendEmail (mailOptions: MailOptions) {
+    try {
+      await createTransporter().sendMail(mailOptions)
+    } catch (error) {
+      console.error('Error sending email:', error)
+      throw new EmailServiceError('Failed to send email')
+    }
+  }
+
+  static async sendContactEmail (contactInformation: ContactInformation): Promise<void> {
+    const mailOptions: MailOptions = {
+      replyTo: contactInformation.email,
+      to: this.GMAIL_USER,
+      subject: `${contactInformation.name} sent you a message`,
+      html: `<b>message: ${contactInformation.message}</b>`
+    }
+
+    await this.sendEmail(mailOptions)
+  }
+
+  static async sendConfirmationEmail (email: string): Promise<void> {
+    const mailOptions: MailOptions = {
+      to: email,
+      subject: 'Santiago received your message',
+      html: '<b>Thanks for getting in contact. I have received your message and will get in contact soon</b>'
+    }
+
+    await this.sendEmail(mailOptions)
+  }
 }
 
-export const sendConfirmationEmail = async (contactInfo: ContactInformation): Promise<string> => {
-  const transporter = createTransporter()
+EmailService.initialize()
 
-  const info = await transporter.sendMail({
-    to: contactInfo.email,
-    subject: 'Santiago received your message',
-    html: '<b>I have received your message and will get in contact soon</b>'
-  })
-
-  return info.response
-}
+export default EmailService

@@ -1,12 +1,18 @@
-import app from './app'
+import { configDotenv } from 'dotenv'
+import express from 'express'
 
-const environment = app.get('env')
-const port = process.env.PORT
+import router from './routes/routesIndex'
 
-app.listen(port, () => {
-  if (environment === 'development') {
-    console.log(`Server running at http://localhost:${port as string}`)
-  } else {
-    console.log('Server is ready')
-  }
+configDotenv()
+
+const app = express()
+
+const { PORT } = process.env || 3000
+
+app.use(express.json())
+
+app.use(router)
+
+app.listen(PORT, () => {
+  console.log('Server is running at ', PORT)
 })

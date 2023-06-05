@@ -1,0 +1,27 @@
+[
+  {
+    "endpoint": "/",
+    "HTTPMethod": "GET",
+    "query": "N/A",
+    "body": "N/A",
+    "description": "Returns all the routes this API provide"
+  },
+  {
+    "endpoint": "/email/send",
+    "HTTPMethod": "POST",
+    "query": "N/A",
+    "body": {
+      "name": "string",
+      "email": "string",
+      "message": "string"
+    },
+    "description": "Send an email with your contact info, and a confirmation email"
+  },
+  {
+    "endpoint": "/github/starred",
+    "HTTPMethod": "GET",
+    "query": "N/A",
+    "body": "N/A",
+    "description": "Fetch all starred repositories with laguage percentages"
+  }
+]
