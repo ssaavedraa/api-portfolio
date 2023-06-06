@@ -1,12 +1,14 @@
 /* eslint-disable camelcase */
 import axios, { AxiosRequestConfig } from 'axios'
+import { Language, Prisma, PrismaClient, Repository } from '@prisma/client'
 
 import GithubServiceError from '../errors/GithubServiceError'
-import { GithubRepository } from '../types/GithubRepository'
 import { GithubRepositoryLanguage } from '../types/GithubRepositoryLanguage'
 import { GithubRepositoryResponse } from '../types/GithubRepositoryResponse'
+import { GithubRepository } from '../types/GithubRepository'
 
 export class GithubService {
+  private static readonly prismaClient: PrismaClient = new PrismaClient()
   private static readonly GITHUB_BASE_URL: string = process.env.GITHUB_BASE_URL as string
   private static readonly GITHUB_TOKEN: string = process.env.GITHUB_TOKEN as string
   private static readonly githubAuthorizationHeader: AxiosRequestConfig = {
@@ -15,7 +17,130 @@ export class GithubService {
     }
   }
 
-  static async getStarredRepositories (): Promise<GithubRepository[]> {
+  static async getRepositories (): Promise<Repository[]> {
+    const repositories = this.prismaClient.repository.findMany({
+      include: {
+        languages: {
+          select: {
+            language: true,
+            percentage: true
+          }
+        }
+      }
+    })
+
+    if (!repositories) {
+      throw new GithubServiceError('No repositories found in database')
+    }
+
+    return repositories
+  }
+
+  static async syncDatabase (): Promise<void> {
+    try {
+      const remoteRepositories = await this.getStarredRepositories()
+      const databaseRepositories = await this.getRepositories()
+
+      const createRemoteRepositories = remoteRepositories.map(async ({ name, url, sshClone, httpClone, languages }) => {
+        return await this.findOrCreateRepository(
+          { name, url, sshClone, httpClone },
+          languages as Language[]
+        )
+      })
+
+      await Promise.all(createRemoteRepositories)
+
+      await this.compareAndDelete(databaseRepositories, remoteRepositories)
+    } catch (error) {
+      console.error('Error while syncing database: ', error)
+      throw new GithubServiceError('Couldn\'t sync database')
+    }
+  }
+
+  private static async compareAndDelete (
+    databaseRepositories: Repository[],
+    remoteRepositories: GithubRepository[]
+  ) {
+    const databaseRespositoryNames = databaseRepositories.map(
+      (repository) => repository.name
+    )
+    const remoteRespositoryNames = remoteRepositories.map(
+      (repository) => repository.name
+    )
+
+    const repositoriesToDelete = databaseRespositoryNames.filter(
+      (repositoryName) => (!remoteRespositoryNames.includes(repositoryName))
+    )
+
+    const repositoryIds = await this.prismaClient.repository.findMany({
+      where: {
+        name: {
+          in: repositoriesToDelete
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+
+    const languageIds = await this.prismaClient.language.findMany({
+      where: {
+        repositoryId: {
+          in: repositoryIds.map((repository) => repository.id)
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+
+    await this.prismaClient.language.deleteMany({
+      where: {
+        id: {
+          in: languageIds.map((language) => language.id)
+        }
+      }
+    })
+
+    await this.prismaClient.repository.deleteMany({
+      where: {
+        name: {
+          in: repositoriesToDelete
+        }
+      }
+    })
+  }
+
+  private static async findOrCreateRepository (
+    { name, url, httpClone, sshClone }: Prisma.RepositoryCreateInput,
+    languages: Language[]
+  ): Promise<Repository> {
+    const repository = await this.prismaClient.repository.findUnique({
+      where: {
+        name
+      }
+    })
+
+    if (!repository) {
+      const newRepository = await this.prismaClient.repository.create({
+        data: {
+          name,
+          url,
+          httpClone,
+          sshClone,
+          languages: {
+            create: languages
+          }
+        }
+      })
+
+      return newRepository
+    }
+
+    return repository
+  }
+
+  private static async getStarredRepositories (): Promise<GithubRepository[]> {
     try {
       const url = `${this.GITHUB_BASE_URL}/users/ssaavedraa/starred`
 
@@ -42,7 +167,7 @@ export class GithubService {
     }
   }
 
-  static async getRepositoryLanguage (repositoryName: string): Promise<GithubRepositoryLanguage[]> {
+  private static async getRepositoryLanguage (repositoryName: string): Promise<GithubRepositoryLanguage[]> {
     try {
       const url = `${this.GITHUB_BASE_URL}/repos/ssaavedraa/${repositoryName}/languages`
 

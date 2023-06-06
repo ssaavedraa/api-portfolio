@@ -1,8 +1,10 @@
 import { configDotenv } from 'dotenv'
 import express from 'express'
+import cors from 'cors'
+import { schedule } from 'node-cron'
 
 import router from './routes/routesIndex'
-import cors from 'cors'
+import SyncDatabaseRepositories from './cron/updateRepositoryDatabase'
 
 configDotenv()
 
@@ -10,6 +12,10 @@ const app = express()
 
 const { PORT } = process.env || 3000
 const allowCors = process.env.FRONTEND_URL
+
+const syncDatabaseRepositories = new SyncDatabaseRepositories()
+
+syncDatabaseRepositories.start()
 
 app.use((_, res, next) => {
   res.header('Access-Control-Allow-Origin', allowCors)

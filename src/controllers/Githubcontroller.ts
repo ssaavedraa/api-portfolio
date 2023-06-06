@@ -4,13 +4,13 @@ import GithubServiceError from '../errors/GithubServiceError'
 import GithubService from '../services/GithubService'
 
 class GithubController {
-  static async getStarredRepositories (req: Request, res: Response) {
+  static async getStarredRepositories (_req: Request, res: Response) {
     try {
-      const repositories = await GithubService.getStarredRepositories()
+      const repositories = await GithubService.getRepositories()
 
       res.status(200).json(repositories)
     } catch (error) {
-      console.error()
+      console.error(error)
 
       if (error instanceof GithubServiceError) {
         res.status(error.status).json({
