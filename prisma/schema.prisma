@@ -12,7 +12,7 @@ datasource db {
 
 model Repository {
   id String @id @default(uuid())
-  name String
+  name String @unique
   url String
   sshClone String
   httpClone String
