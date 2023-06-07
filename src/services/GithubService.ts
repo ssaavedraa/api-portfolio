@@ -144,22 +144,6 @@ export class GithubService {
 
       const response = await axios.get<GithubRepositoryResponse[]>(url, this.githubAuthorizationHeader)
 
-      // const repositories: Promise<GithubRepository>[] = response.data
-      //   .map(async ({ id, name, html_url, ssh_url, clone_url }) => {
-      //     const languages = await this.getRepositoryLanguage(name)
-
-      //     return {
-      //       id,
-      //       name,
-      //       url: html_url,
-      //       httpClone: clone_url,
-      //       sshClone: ssh_url,
-      //       languages
-      //     }
-      //   })
-
-      // return Promise.all(repositories)
-
       const repositories: GithubRepository[] = []
 
       for (const { id, name, html_url, ssh_url, clone_url } of response.data) {
