@@ -6,14 +6,12 @@ class SyncDatabaseRepositories extends CronJob {
     super('0 0 * * *', async () => {
       try {
         console.log('Updating database')
-        await GithubService.syncDatabase()
+        // eslint-disable-next-line no-unused-vars
+        const _databaseUpdate = await GithubService.syncDatabase()
         console.log('Database updated')
       } catch (error) {
         console.error('Error updating database', error)
       }
-    }, {
-      scheduled: true,
-      timezone: 'America/Bogota'
     })
   }
 }
