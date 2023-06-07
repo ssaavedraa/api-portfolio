@@ -1,7 +1,5 @@
 import { configDotenv } from 'dotenv'
 import express from 'express'
-import cors from 'cors'
-import { schedule } from 'node-cron'
 
 import router from './routes/routesIndex'
 import SyncDatabaseRepositories from './cron/updateRepositoryDatabase'
@@ -15,7 +13,7 @@ const allowCors = process.env.FRONTEND_URL
 
 const syncDatabaseRepositories = new SyncDatabaseRepositories()
 
-syncDatabaseRepositories.start()
+app.use(express.json())
 
 app.use((_, res, next) => {
   res.header('Access-Control-Allow-Origin', allowCors)
@@ -27,10 +25,10 @@ app.use((_, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
   next()
 })
-app.use(cors())
-app.use(express.json())
 
 app.use(router)
+
+syncDatabaseRepositories.start()
 
 app.listen(PORT, () => {
   console.log('Server is running at ', PORT)

@@ -41,14 +41,12 @@ export class GithubService {
       const remoteRepositories = await this.getStarredRepositories()
       const databaseRepositories = await this.getRepositories()
 
-      const createRemoteRepositories = remoteRepositories.map(async ({ name, url, sshClone, httpClone, languages }) => {
-        return await this.findOrCreateRepository(
+      for (const { name, url, sshClone, httpClone, languages } of remoteRepositories) {
+        await this.findOrCreateRepository(
           { name, url, sshClone, httpClone },
           languages as Language[]
         )
-      })
-
-      await Promise.all(createRemoteRepositories)
+      }
 
       await this.compareAndDelete(databaseRepositories, remoteRepositories)
     } catch (error) {
@@ -146,21 +144,38 @@ export class GithubService {
 
       const response = await axios.get<GithubRepositoryResponse[]>(url, this.githubAuthorizationHeader)
 
-      const repositories: Promise<GithubRepository>[] = response.data
-        .map(async ({ id, name, html_url, ssh_url, clone_url }) => {
-          const languages = await this.getRepositoryLanguage(name)
+      // const repositories: Promise<GithubRepository>[] = response.data
+      //   .map(async ({ id, name, html_url, ssh_url, clone_url }) => {
+      //     const languages = await this.getRepositoryLanguage(name)
 
-          return {
-            id,
-            name,
-            url: html_url,
-            httpClone: clone_url,
-            sshClone: ssh_url,
-            languages
-          }
+      //     return {
+      //       id,
+      //       name,
+      //       url: html_url,
+      //       httpClone: clone_url,
+      //       sshClone: ssh_url,
+      //       languages
+      //     }
+      //   })
+
+      // return Promise.all(repositories)
+
+      const repositories: GithubRepository[] = []
+
+      for (const { id, name, html_url, ssh_url, clone_url } of response.data) {
+        const languages = await this.getRepositoryLanguage(name)
+
+        repositories.push({
+          id,
+          name,
+          url: html_url,
+          httpClone: clone_url,
+          sshClone: ssh_url,
+          languages
         })
+      }
 
-      return Promise.all(repositories)
+      return repositories
     } catch (error) {
       console.error('Error retrieving starred repositories:', error)
       throw new GithubServiceError('Failed to retrieve starred repositories')
