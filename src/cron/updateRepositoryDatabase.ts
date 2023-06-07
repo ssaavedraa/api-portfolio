@@ -3,7 +3,7 @@ import CronJob from './CronJob'
 
 class SyncDatabaseRepositories extends CronJob {
   constructor () {
-    super('0 0 0 * *', async () => {
+    super('0 0 0 * * *', async () => {
       try {
         console.log('Updating database')
         // await GithubService.syncDatabase()
