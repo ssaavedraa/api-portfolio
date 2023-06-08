@@ -22,7 +22,7 @@ model Repository {
 model Language {
   id String @id @default(uuid())
   language String
-  percentage String
+  percentage Float
   repository Repository @relation(fields: [repositoryId], references: [id])
   repositoryId String
 }
