@@ -5,6 +5,6 @@ import { sendEmailValidationMiddleware } from '../middlewares/validation/emailVa
 
 const EmailRouter = Router()
 
-EmailRouter.post('/email/send', sendEmailValidationMiddleware.validate, EmailController.send)
+EmailRouter.post('/send', sendEmailValidationMiddleware.validate, EmailController.send)
 
 export default EmailRouter
