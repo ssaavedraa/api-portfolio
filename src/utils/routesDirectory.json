@@ -23,5 +23,12 @@
     "query": "N/A",
     "body": "N/A",
     "description": "Fetch all starred repositories with laguage percentages"
+  },
+  {
+    "endpoint": "/github/languages",
+    "HTTPMethod": "GET",
+    "query": "N/A",
+    "body": "N/A",
+    "description": "Fetch overall laguage percentages calculation"
   }
 ]
