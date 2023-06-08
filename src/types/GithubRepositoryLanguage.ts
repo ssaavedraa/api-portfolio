@@ -1,4 +1,4 @@
 export interface GithubRepositoryLanguage {
   language: string,
-  percentage: string
+  percentage: number
 }

@@ -55,6 +55,22 @@ export class GithubService {
     }
   }
 
+  static async getAllLanguages (): Promise<Partial<Language>[]> {
+    const query = Prisma.sql`SELECT language, SUM(CAST(percentage AS decimal)) AS percentage
+                  FROM "Language"
+                  GROUP by language`
+
+    const languages: Language[] = await this.prismaClient.$queryRaw(query)
+
+    const languageTotal = languages.reduce((sum, { percentage }) => sum + parseFloat(`${percentage}`), 0.0)
+
+    return languages.map(({ language, percentage }) => ({
+      language,
+      percentage: (percentage / languageTotal) * 100
+    }))
+      .sort((language1, language2) => (language2.percentage - language1.percentage))
+  }
+
   private static async compareAndDelete (
     databaseRepositories: Repository[],
     remoteRepositories: GithubRepository[]
@@ -187,8 +203,8 @@ export class GithubService {
 
     const languagesWithPercentage = languageKeys.map((language: string, index: number) => ({
       language,
-      percentage: ((languageWeights[index] * 100) / totalWeight
-      ).toFixed(2)
+      percentage: parseFloat(((languageWeights[index] * 100) / totalWeight
+      ).toFixed(2))
     }))
 
     return languagesWithPercentage

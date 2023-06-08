@@ -21,7 +21,22 @@ class GithubController {
 
       res.status(500).json({
         status: 500,
-        message: 'There was an error retrieving data'
+        message: 'There was an error retrieving respositories'
+      })
+    }
+  }
+
+  static async getAllLanguages (_req: Request, res: Response) {
+    try {
+      const languages = await GithubService.getAllLanguages()
+
+      res.status(200).json(languages)
+    } catch (error) {
+      console.error(error)
+
+      res.status(500).json({
+        status: 500,
+        message: 'There was an error retrieving languages'
       })
     }
   }
