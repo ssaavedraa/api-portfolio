@@ -7,7 +7,7 @@ import GithubRouter from './GithubRoutes'
 const router = Router()
 
 router.use(HomeRouter)
-router.use(EmailRouter)
-router.use(GithubRouter)
+router.use('/email', EmailRouter)
+router.use('/github', GithubRouter)
 
 export default router
