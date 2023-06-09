@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,18 +8,18 @@ datasource db {
 }
 
 model Repository {
-  id String @id @default(uuid())
-  name String @unique
-  url String
-  sshClone String
+  id        String     @id @default(uuid())
+  name      String     @unique
+  url       String
+  sshClone  String
   httpClone String
   languages Language[]
 }
 
 model Language {
-  id String @id @default(uuid())
-  language String
-  percentage Float
-  repository Repository @relation(fields: [repositoryId], references: [id])
+  id           String     @id @default(uuid())
+  language     String
+  percentage   Float
   repositoryId String
+  repository   Repository @relation(fields: [repositoryId], references: [id])
 }
