@@ -11,6 +11,7 @@
     "dev": "ts-node-dev src/index.ts",
     "start": "node dist/index.js --inspect",
     "lint": "eslint . --ext .ts",
+    "prebuild": "npx prisma migrate deploy",
     "build": "tsc",
     "test": "jest --verbose",
     "github": "curl -I https://api.github.com/users/octocat"
