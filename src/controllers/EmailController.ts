@@ -16,7 +16,7 @@ class EmailController {
 
       await EmailService.sendConfirmationEmail(email)
 
-      res.status(200).json({ message: 'Thanks for getting in contact' })
+      return res.status(200).json({ message: 'Thanks for getting in contact' })
     } catch (error) {
       console.error(error)
 

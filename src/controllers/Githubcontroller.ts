@@ -8,9 +8,7 @@ class GithubController {
     try {
       const repositories = await GithubService.getRepositories()
 
-      setTimeout(() => {
-        res.status(200).json(repositories)
-      }, 1000)
+      return res.status(200).json(repositories)
     } catch (error) {
       console.error(error)
 
@@ -32,7 +30,7 @@ class GithubController {
     try {
       const languages = await GithubService.getAllLanguages()
 
-      res.status(200).json(languages)
+      return res.status(200).json(languages)
     } catch (error) {
       console.error(error)
 
