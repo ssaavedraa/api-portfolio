@@ -26,6 +26,10 @@ app.use((_, res, next) => {
   next()
 })
 
+app.options('*', (_, res) => {
+  res.sendStatus(200)
+})
+
 app.use(router)
 
 syncDatabaseRepositories.start()
