@@ -8,18 +8,20 @@ class GithubController {
     try {
       const repositories = await GithubService.getRepositories()
 
-      res.status(200).json(repositories)
+      setTimeout(() => {
+        res.status(200).json(repositories)
+      }, 1000)
     } catch (error) {
       console.error(error)
 
       if (error instanceof GithubServiceError) {
-        res.status(error.status).json({
+        return res.status(error.status).json({
           status: error.status,
           message: error.message
         })
       }
 
-      res.status(500).json({
+      return res.status(500).json({
         status: 500,
         message: 'There was an error retrieving respositories'
       })
@@ -34,7 +36,7 @@ class GithubController {
     } catch (error) {
       console.error(error)
 
-      res.status(500).json({
+      return res.status(500).json({
         status: 500,
         message: 'There was an error retrieving languages'
       })
