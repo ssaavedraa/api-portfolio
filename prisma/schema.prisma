@@ -14,6 +14,8 @@ model Repository {
   sshClone  String
   httpClone String
   languages Language[]
+  deployed  Boolean    @default(false)
+  deploymentUrl String?
 }
 
 model Language {

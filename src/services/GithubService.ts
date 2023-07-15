@@ -17,8 +17,8 @@ export class GithubService {
     }
   }
 
-  static async getRepositories (): Promise<Repository[]> {
-    const repositories = this.prismaClient.repository.findMany({
+  static async getRepositories (): Promise<{ deployed: GithubRepository[], notDeployed: GithubRepository[]}> {
+    const repositories = await this.prismaClient.repository.findMany({
       include: {
         languages: {
           select: {
@@ -26,14 +26,23 @@ export class GithubService {
             percentage: true
           }
         }
+      },
+      orderBy: {
+        deployed: 'desc'
       }
     })
+
+    const deployedRepositories = repositories.filter((repository) => repository.deployed)
+    const notDeployedRepositories = repositories.filter((repository) => !repository.deployed)
 
     if (!repositories) {
       throw new GithubServiceError('No repositories found in database')
     }
 
-    return repositories
+    return {
+      deployed: deployedRepositories,
+      notDeployed: notDeployedRepositories
+    }
   }
 
   static async syncDatabase (): Promise<void> {
@@ -72,9 +81,10 @@ export class GithubService {
   }
 
   private static async compareAndDelete (
-    databaseRepositories: Repository[],
+    { deployed, notDeployed }: { deployed: GithubRepository[], notDeployed: GithubRepository[]},
     remoteRepositories: GithubRepository[]
   ) {
+    const databaseRepositories = [...deployed, ...notDeployed]
     const databaseRespositoryNames = databaseRepositories.map(
       (repository) => repository.name
     )
